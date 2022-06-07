@@ -258,6 +258,8 @@ libclboss_la_SOURCES = \
 	Boss/Mod/SwapManager.hpp \
 	Boss/Mod/SwapReporter.cpp \
 	Boss/Mod/SwapReporter.hpp \
+	Boss/Mod/Tally.cpp \
+	Boss/Mod/Tally.hpp \
 	Boss/Mod/TimerTwiceDailyAnnouncer.cpp \
 	Boss/Mod/TimerTwiceDailyAnnouncer.hpp \
 	Boss/Mod/Timers.cpp \
@@ -601,6 +603,7 @@ TESTS = \
 	tests/boss/test_rpc \
 	tests/boss/test_stringid \
 	tests/boss/test_swapmanager \
+	tests/boss/test_tally \
 	tests/boss/test_unmanagedmanager \
 	tests/boss/test_version \
 	tests/boss/test_waiter_timed \

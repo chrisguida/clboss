@@ -1,3 +1,5 @@
+- Implement `clboss-tally`, which provides summary on earnings vs.  expenditures for the use of the node operator.
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
