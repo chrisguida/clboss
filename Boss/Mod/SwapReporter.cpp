@@ -118,6 +118,37 @@ private:
 				});
 			});
 		});
+
+		/* `clboss-liquidity-ads` */
+		bus.subscribe<Msg::Manifestation
+			     >([this](Msg::Manifestation const& _) {
+			return bus.raise(Msg::ManifestCommand{
+				"clboss-liquidity-ads", "",
+				"Report about liquidity ads",
+				false
+			});
+		});
+		bus.subscribe<Msg::CommandRequest
+			     >([this](Msg::CommandRequest const& r) {
+			if (r.command != "clboss-liquidity-ads")
+				return Ev::lift();
+			auto id = r.id;
+			if (!db)
+				return bus.raise(Msg::CommandResponse{
+					id,
+					Json::Out()
+						.start_object()
+						.field("error", "db not yet available")
+						.end_object()
+				});
+			return db.transact().then([this, id](Sqlite3::Tx tx) {
+				auto report = make_report(tx);
+				tx.commit();
+				return bus.raise(Msg::CommandResponse{
+					id, report
+				});
+			});
+		});
 	}
 
 	Json::Out make_report(Sqlite3::Tx& tx) {
