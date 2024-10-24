@@ -679,7 +679,7 @@ create-tarball: create-tarball.in Makefile
 BUILT_SOURCES = commit_hash.h
 
 commit_hash.h: FORCE
-	@if test -e $(srcdir)/.git/logs/HEAD; then \
+	@if test -e $(srcdir)/.git/logs/HEAD || test -f $(srcdir)/.git; then \
 		if [ ! -f $(srcdir)/commit_hash.h ] || [ $(srcdir)/.git/logs/HEAD -nt $(srcdir)/commit_hash.h ]; then \
 			echo "Regenerating $(srcdir)/commit_hash.h..."; \
 			$(SHELL) $(srcdir)/generate_commit_hash.sh; \
