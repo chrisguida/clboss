@@ -16,16 +16,12 @@ namespace {
 auto const all_nodes =
 		std::map<Boss::Msg::Network, std::vector<std::string>>
 { { Boss::Msg::Network_Bitcoin
-  , { "03e2408a49f07d2f4083a47344138ef89e7617e63919202c92aa8d49b574a560ae@65.108.246.14:19736"
-    , "035e4ff418fc8b5554c5d9eea66396c227bd429a3251c8cbc711002ba215bfc226@170.75.163.209:9735"
-    , "03abf6f44c355dec0d5aa155bdbdd6e0c8fefe318eff402de65c6eb2e1be55dc3e@3.132.230.42:9735"
-    , "03b65c19de2da9d35895b37e6fa263cefbf8d184e6b61c0713747ebf12409d219f@164.90.241.111:9735"
-    , "02d96eadea3d780104449aca5c93461ce67c1564e2e1d73225fa67dd3b997a6018@45.86.229.190:9736"
-    , "031f2669adab71548fad4432277a0d90233e3bc07ac29cfb0b3e01bd3fb26cb9fa@44.242.118.94:9735"
-    , "03cde60a6323f7122d5178255766e38114b4722ede08f7c9e0c5df9b912cc201d6@34.65.85.39:9745"
-    , "02f1a8c87607f415c8f22c00593002775941dea48869ce23096af27b0cfdcc0b69@52.13.118.208:9735"
-    , "0294ac3e099def03c12a37e30fe5364b1223fd60069869142ef96580c8439c2e0a@8.210.134.135:26658",
-    }
+    /* On mainnet this build is for the BLAKE2b chain.  The nodes
+     * upstream lists here are on the SHA256d chain and do not set
+     * option_blake2b (feature bit 512), so lightningd would refuse
+     * every one of them.  None are listed until nodes of the
+     * BLAKE2b chain are known.  */
+  , { }
   }
   , { Boss::Msg::Network_Testnet
     ,  { "039fbf81305e417c2acbe3b96a4929ce40b7f3537720199db9dc010b1be3c28553:167.99.21.222:19735"

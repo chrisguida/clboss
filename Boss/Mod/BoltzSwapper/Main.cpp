@@ -8,22 +8,24 @@ namespace {
     auto const boltz_instances = std::map< Boss::Msg::Network, std::vector<Boss::Mod::BoltzSwapper::Instance> >
     {
         { Boss::Msg::Network_Bitcoin,
-    /* Historically, the clearnet API endpoint was used as the in-database label
-     * for Boltz services.
-     * The boltz.exchange service thus uses the API endpoint as the label for
-     * back-compatibility.
-     * Other services since then were added after we had a separate label.
-     * The URLs are API roots: the service appends the /v2/... paths.
+    /* On mainnet this build is for the BLAKE2b chain, whose CLN
+     * still reports the network as "bitcoin".
+     * boltz.exchange and the other services of the SHA256d chain
+     * would lock up coins on a chain this node does not follow, so
+     * they are not listed.
+     * These two run paulscode/lightning-fork-swap, which serves the
+     * Boltz API v2 at the site root: the service appends /v2/...
+     * The label is the key in the database.
      */
       {
-          { "https://boltz.exchange/api",
-          "https://api.boltz.exchange",
-          "http://boltzzzbnus4m7mta3cxmflnps4fp7dueu2tgurstbvrbt6xswzcocyd.onion/api"
+          { "plebswap.com",
+            "https://plebswap.com",
+            ""
           },
-          { "AutonomousOrganization@github.com",
-              "",
-              "http://jsyqqszgfrya6nj7nhi4hu4tdpuvfursl7dyxeiukzit5mvckqbzxpad.onion"
-            }
+          { "lightningfork.com",
+            "https://lightningfork.com",
+            ""
+          }
       }
     },
         { Boss::Msg::Network_Signet,

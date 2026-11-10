@@ -13,11 +13,22 @@ namespace {
  * is a parse gone wrong, not a block.  */
 auto const max_txs = std::uint64_t(1000000);
 
+/* The header Bitcoin began with.  */
+auto const header_v1_size = std::size_t(80);
+/* The BLAKE2b proof of work marks its redesigned header by
+ * setting the top bit of the version word, and such a header
+ * carries 84 further bytes (nonce2, nonce3, extranonce, time
+ * offset, txcount, flags, XOR key and mask bits, height,
+ * merge-mining hash).
+ * We never hash the header, so we only need its width to
+ * find where the transactions start.  */
+auto const header_v2_extra = std::size_t(84);
+
 }
 
 namespace Bitcoin {
 
-Block::Block(std::string const& s) : header(80, 0) {
+Block::Block(std::string const& s) : header(header_v1_size, 0) {
 	auto buf = Util::Str::hexread(s);
 	auto str = std::string(buf.begin(), buf.end());
 	auto is = std::istringstream(std::move(str));
@@ -57,10 +68,20 @@ std::ostream& operator<<(std::ostream& os, Bitcoin::Block const& v) {
 }
 
 std::istream& operator>>(std::istream& is, Bitcoin::Block& v) {
-	v.header.resize(80);
-	is.read((char*) v.header.data(), 80);
+	v.header.resize(header_v1_size);
+	is.read((char*) v.header.data(), header_v1_size);
 	if (!is.good())
 		return is;
+	/* The version is little-endian, so its top bit is in
+	 * the fourth byte.  */
+	if (v.header[3] & 0x80) {
+		v.header.resize(header_v1_size + header_v2_extra);
+		is.read( (char*) v.header.data() + header_v1_size
+		       , header_v2_extra
+		       );
+		if (!is.good())
+			return is;
+	}
 
 	auto len = std::uint64_t();
 	is >> Bitcoin::varint(len);
