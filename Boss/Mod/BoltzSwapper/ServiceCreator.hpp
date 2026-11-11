@@ -25,6 +25,9 @@ struct Instance {
 	std::string clearnet;
 	/* Tor API endpoint; can be "" if no onion.  */
 	std::string onion;
+	/* Whether the service swaps on the BLAKE2b chain.  It is
+	 * used only by a node on the same chain.  */
+	bool blake2b = false;
 };
 
 /** class Boss::Mod::BoltzSwapper::ServiceCreator

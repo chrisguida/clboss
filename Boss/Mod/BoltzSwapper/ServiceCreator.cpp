@@ -373,10 +373,14 @@ void ServiceCreator::start() {
 		});
 	});
 	bus.subscribe<Msg::Init>([this](Msg::Init const& init) {
+		/* The built-in services of the chain the node is on.
+		 * Those the operator lists are taken as they are.  */
 		auto builtin = std::vector<Instance>();
 		auto it = instances.find(init.network);
 		if (it != instances.end())
-			builtin = it->second;
+			for (auto const& instance : it->second)
+				if (instance.blake2b == init.blake2b)
+					builtin.push_back(instance);
 
 		auto factory = std::make_shared<Boltz::ServiceFactory>
 			( threadpool

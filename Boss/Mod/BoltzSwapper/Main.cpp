@@ -23,7 +23,24 @@ namespace {
           { "AutonomousOrganization@github.com",
               "",
               "http://jsyqqszgfrya6nj7nhi4hu4tdpuvfursl7dyxeiukzit5mvckqbzxpad.onion"
-            }
+            },
+          /* The services below swap on the BLAKE2b chain, where
+           * lightningd also reports the network as
+           * "bitcoin"; a node is offered them, and not the ones
+           * above, when it advertises option_blake2b.
+           * Both run paulscode/lightning-fork-swap, which serves the
+           * Boltz API v2 at the site root.
+           */
+          { "plebswap.com",
+            "https://plebswap.com",
+            "",
+            /* blake2b = */ true
+          },
+          { "lightningfork.com",
+            "https://lightningfork.com",
+            "",
+            /* blake2b = */ true
+          }
       }
     },
         { Boss::Msg::Network_Signet,
