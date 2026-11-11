@@ -13,7 +13,9 @@ namespace Bitcoin {
 /** class Bitcoin::Block
  *
  * @brief a block as the node serializes it: the
- * 80-byte header and the transactions.
+ * header and the transactions.
+ * The header is 80 bytes, or 164 bytes for a block of the
+ * BLAKE2b chain that sets the top bit of its version.
  */
 class Block {
 public:
