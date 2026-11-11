@@ -49,6 +49,24 @@ auto const all_nodes =
   }
 };
 
+/* Nodes of the BLAKE2b chain, for a node that advertises
+ * option_blake2b.  lightningd reports the network as
+ * "bitcoin" there too, but the nodes above do not set the bit and
+ * such a node refuses them.  */
+auto const all_nodes_blake2b =
+		std::map<Boss::Msg::Network, std::vector<std::string>>
+{ { Boss::Msg::Network_Bitcoin
+  , { "0222d36d7b634ead665c982145f6e4507ad65c4f369902ab3ca11e379d2139dc60@213.152.162.23:50002"
+    , "02e71fe6de701822ec5c923616e78c5673bf14866599d87a2a19544fe7367c935f@45.13.214.55:9737"
+    , "02bfcaa8328a89aa03ef55b3b810dc0dc43ee6df1e8d4cc8badb219ba303063389@15.204.83.31:9735"
+    , "02afed7beb7d2546e5fa02fd99ff5e0f57c2b772ba4d446d25f51e98f1a89c4c2a@202.61.73.35:9737"
+    , "021fcf55e11a02e8a4604c8044e8925298a4b7a404f9d6ab39f450fe6e9327dc42@129.121.136.245:9735"
+    , "03cd3175b98f56a4b7a27d169ff211afe4d49973448fce92e2f7f03f526663e666@91.190.100.60:9735"
+    , "0396be44365cdf1050405ad5baf7d762f24016b70eb53868f067b9ed80cea159c7@179.27.118.130:9935"
+    }
+  }
+};
+
 }
 
 namespace Boss { namespace Mod {
@@ -61,8 +79,11 @@ private:
 
 	void start() {
 		bus.subscribe<Msg::Init>([this](Msg::Init const& init) {
-			auto it = all_nodes.find(init.network);
-			if ( it == all_nodes.end()
+			auto const& table = init.blake2b ? all_nodes_blake2b
+							 : all_nodes
+							 ;
+			auto it = table.find(init.network);
+			if ( it == table.end()
 			  || it->second.size() == 0
 			   )
 				return Boss::log( bus, Warn
