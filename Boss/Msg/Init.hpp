@@ -31,6 +31,13 @@ struct Init {
 	 * must not connect either.  Defaulted so that aggregate
 	 * constructions without the field still compile.  */
 	bool offline = false;
+	/* True when the node follows the BLAKE2b chain: it
+	 * advertises option_blake2b (feature bit 512),
+	 * which the nodes of the SHA256d chain do not.  lightningd
+	 * reports the network as "bitcoin" on either, so the
+	 * built-in peers and swap services are chosen by this and
+	 * the network together.  */
+	bool blake2b = false;
 };
 
 }}

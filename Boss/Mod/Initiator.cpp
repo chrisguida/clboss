@@ -18,6 +18,7 @@
 #include"Jsmn/Object.hpp"
 #include"Json/Out.hpp"
 #include"Ln/CommandId.hpp"
+#include"Ln/FeatureBit.hpp"
 #include"Ln/NodeId.hpp"
 #include"Net/Connector.hpp"
 #include"Net/DirectConnector.hpp"
@@ -40,6 +41,10 @@
 #endif
 
 namespace {
+
+/* BOLT #9 feature bit a node of the BLAKE2b chain sets, as
+ * compulsory, in `init`.  */
+auto const option_blake2b = (unsigned int)(512);
 
 std::string stringify_jsmn(Jsmn::Object const& js) {
 	auto os = std::ostringstream();
@@ -72,6 +77,8 @@ private:
 	bool always_use_proxy;
 	/* lightningd started with --offline.  */
 	bool offline;
+	/* The node advertises option_blake2b.  */
+	bool blake2b;
 	/* Set from the clboss-skip-cln-version-check flag at init;
 	 * see check_cln_version() below.  */
 	bool skip_version_check;
@@ -390,6 +397,21 @@ public:
 
 				self_id = Ln::NodeId(s_id);
 
+				/* option_blake2b, feature bit 512, among
+				 * the features we send in `init`.  */
+				blake2b = false;
+				if (info.has("our_features")) {
+					auto feats = info["our_features"];
+					if ( feats.is_object()
+					  && feats.has("init")
+					  && feats["init"].is_string()
+					   )
+						blake2b = Ln::feature_bit(
+							std::string(feats["init"]),
+							option_blake2b
+						);
+				}
+
 				connector = Util::make_unique<
 					Net::DirectConnector
 				>();
@@ -520,8 +542,16 @@ public:
 					network, *rpc, self_id, db,
 					*connector, *signer,
 					proxy, always_use_proxy,
-					offline
+					offline, blake2b
 				});
+			}).then([this]() {
+				if (!blake2b)
+					return Ev::lift();
+				return Boss::log( bus, Info
+						, "Node advertises option_blake2b: "
+						  "using the peers and swap services "
+						  "of the BLAKE2b chain."
+						);
 			}).then([this]() {
 				return Boss::log( bus, Debug
 						, "Initialization raised."

@@ -162,10 +162,12 @@ public:
 	}
 	RpcServerMock(RpcServerMock&&) =delete;
 
-	Ev::Io<void> run(std::string listconfigs_result) {
-		return read_request().then([this](Jsmn::Object req) {
+	Ev::Io<void> run( std::string listconfigs_result
+			, std::string getinfo_extra
+			) {
+		return read_request().then([this, getinfo_extra](Jsmn::Object req) {
 			auto id = extract_id_and_check_method(req, "getinfo");
-			return reply_result(id, std::string(R"({"id":")") + self_id + R"("})");
+			return reply_result(id, std::string(R"({"id":")") + self_id + R"(")" + getinfo_extra + "}");
 		}).then([this]() {
 			return read_request();
 		}).then([this, listconfigs_result](Jsmn::Object req) {
@@ -179,9 +181,14 @@ struct InitConfig {
 	std::string proxy;
 	bool always_use_proxy;
 	bool offline;
+	bool blake2b;
 };
 
-InitConfig run_initiator_case(std::string listconfigs_result) {
+/* `getinfo_extra` is appended inside the getinfo result, after the
+ * node id: "" or further fields, each led by a comma.  */
+InitConfig run_initiator_case( std::string listconfigs_result
+			     , std::string getinfo_extra = ""
+			     ) {
 	auto guard = TempDirGuard();
 
 	int socks[2];
@@ -220,6 +227,7 @@ InitConfig run_initiator_case(std::string listconfigs_result) {
 		got.proxy = m.proxy;
 		got.always_use_proxy = m.always_use_proxy;
 		got.offline = m.offline;
+		got.blake2b = m.blake2b;
 		return Ev::lift();
 	});
 	bus.subscribe<Boss::Msg::CommandResponse>([&](Boss::Msg::CommandResponse const& m) {
@@ -254,7 +262,9 @@ InitConfig run_initiator_case(std::string listconfigs_result) {
 		Ln::CommandId::left(std::uint64_t(42))
 	};
 
-	auto server_code = server.run(std::move(listconfigs_result));
+	auto server_code = server.run( std::move(listconfigs_result)
+				     , std::move(getinfo_extra)
+				     );
 	auto client_code = Ev::lift().then([&]() {
 		return bus.raise(req);
 	}).then([&]() {
@@ -330,6 +340,26 @@ int main() {
 	assert(legacy_offline_cfg.offline);
 	assert(modern_offline_cfg.proxy == "");
 	assert(!modern_offline_cfg.always_use_proxy);
+
+	/* option_blake2b is feature bit 512 of what the node sends
+	 * in `init`: the low bit of the 65th byte from the end.
+	 * Bit 513 is another feature, and the features of our
+	 * node_announcement and invoices are not looked at.  */
+	auto const features = [](char const* field, std::string hex) {
+		return std::string(R"(,"our_features":{")") + field
+		     + R"(":")" + hex + R"("})";
+	};
+	auto const bit512 = "01" + std::string(128, '0');
+	auto const bit513 = "02" + std::string(128, '0');
+	assert(!legacy_cfg.blake2b);
+	assert(!modern_cfg.blake2b);
+	assert(run_initiator_case(modern, features("init", bit512)).blake2b);
+	assert(run_initiator_case(modern, features("init", "09" + bit512)).blake2b);
+	assert(!run_initiator_case(modern, features("init", bit513)).blake2b);
+	assert(!run_initiator_case(modern, features("init", "8a51a1")).blake2b);
+	assert(!run_initiator_case(modern, features("init", "")).blake2b);
+	assert(!run_initiator_case(modern, features("node", bit512)).blake2b);
+	assert(!run_initiator_case(modern, R"(,"our_features":"none")").blake2b);
 
 	return 0;
 }
