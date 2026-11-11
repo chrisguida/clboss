@@ -131,10 +131,15 @@ private:
 	bool min_nodes_to_process_set;
 	/* From Msg::Init; the default depends on it.  */
 	Boss::Msg::Network network;
+	bool blake2b;
 	bool network_known;
 
 	static
-	std::size_t default_min_nodes(Boss::Msg::Network n) {
+	std::size_t default_min_nodes(Boss::Msg::Network n, bool blake2b) {
+		/* The Lightning network of the BLAKE2b chain began anew
+		 * and counts its nodes in tens.  */
+		if (n == Boss::Msg::Network_Bitcoin && blake2b)
+			return 20;
 		switch (n) {
 		case Boss::Msg::Network_Bitcoin: return 800;
 		case Boss::Msg::Network_Testnet: return 100;
@@ -152,15 +157,17 @@ private:
 		min_nodes_to_process_set = false;
 		min_nodes_to_process = 0;
 		network_known = false;
+		blake2b = false;
 
 		bus.subscribe<Msg::Init>([this](Msg::Init const& init) {
 			rpc = &init.rpc;
 			self = init.self_id;
 			db = init.db;
 			network = init.network;
+			blake2b = init.blake2b;
 			network_known = true;
 			if (!min_nodes_to_process_set)
-				min_nodes_to_process = default_min_nodes(network);
+				min_nodes_to_process = default_min_nodes(network, blake2b);
 			return db.transact().then([this](Sqlite3::Tx tx) {
 				/* Create the on-database have_run flag.  */
 				tx.query_execute(R"SQL(
@@ -236,7 +243,7 @@ private:
 				min_nodes_to_process_set = false;
 				if (!network_known)
 					return Ev::lift();
-				min_nodes_to_process = default_min_nodes(network);
+				min_nodes_to_process = default_min_nodes(network, blake2b);
 				return Boss::log( bus, Boss::Info
 						, "ChannelFinderByPopularity: "
 						  "min-nodes-to-process reverted "
