@@ -687,6 +687,7 @@ TESTS = \
 	tests/boss/test_boltzswapper_parse_instances \
 	tests/boss/test_boltzswapper_servicecreator_chain \
 	tests/boss/test_boltzswapper_servicecreator_restart \
+	tests/boss/test_boltzswapper_servicecreator_setconfig \
 	tests/boss/test_init_blake2b_tables \
 	tests/boss/test_swapmanager \
 	tests/boss/test_unmanagedmanager \
