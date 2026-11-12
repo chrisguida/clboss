@@ -39,6 +39,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   reports the network as `bitcoin` on that chain and on the SHA256d
   chain alike; a node that does not advertise the bit is treated as
   before.
+- On regtest, CLBOSS swaps through a Boltz backend at
+  `http://127.0.0.1:9001` when there is one.
 
 ### Changed
 

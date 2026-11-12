@@ -349,6 +349,14 @@ blocks through `BITCOIN_CLI` (default `bitcoin-cli`; for example
 leaf without asking the provider to co-sign, which exercises the path
 CLBOSS takes when a provider refuses.
 
+### Testing on regtest w/ swaps
+
+On regtest CLBOSS looks for a Boltz backend of your own at
+`http://127.0.0.1:9001`, the port the backend's API listens on by
+default.  With a backend there, on the same regtest chain as your
+node, CLBOSS swaps through it with no further setup; with none, it
+finds no swap service, as before.
+
 ### Contributed Utilities
 
 There are a number of contributed utilities in the `contrib` directory.  See

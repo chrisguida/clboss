@@ -51,6 +51,17 @@ namespace {
               }
           }
         },
+        { Boss::Msg::Network_Regtest,
+    /* A regtest chain is one's own, and so is its Boltz backend:
+     * 9001 is the port the backend's API listens on by default.
+     */
+            {
+              { "regtest-boltz-backend-for-clboss",
+                  "http://127.0.0.1:9001",
+                  ""
+              }
+          }
+        },
         { Boss::Msg::Network_Testnet,
             {
               { "https://testnet.boltz.exchange/api",
