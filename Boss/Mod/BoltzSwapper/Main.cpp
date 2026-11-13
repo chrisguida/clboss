@@ -59,6 +59,13 @@ namespace {
               { "regtest-boltz-backend-for-clboss",
                   "http://127.0.0.1:9001",
                   ""
+              },
+              /* The same, for a regtest chain with the BLAKE2b
+               * rules: the backend is whichever one runs there.  */
+              { "regtest-boltz-backend-for-clboss",
+                  "http://127.0.0.1:9001",
+                  "",
+                  /* blake2b = */ true
               }
           }
         },
