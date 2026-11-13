@@ -42,8 +42,15 @@
 
           enableParallelBuilding = true;
 
+          # There is no git in the build sandbox and no .git in the
+          # source, so generate_commit_hash.sh has nothing to ask: take
+          # the commit from the flake instead.  The Makefile keeps a
+          # commit_hash.h it finds outside a git work tree.
           preBuild = ''
-            ./generate_commit_hash.sh
+            printf '#pragma once\n#define GIT_COMMIT_HASH "%s"\n#define GIT_DESCRIBE "%s"\n' \
+              "${self.rev or self.dirtyRev or "unknown"}" \
+              "nix-${self.shortRev or self.dirtyShortRev or "unknown"}" \
+              > commit_hash.h
           '';
 
           doCheck = false;
