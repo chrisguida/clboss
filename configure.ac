@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([clboss], [0.17.3], [ken@bonsai.com])
+AC_INIT([clboss], [0.17.3-blake2b.1], [https://github.com/chrisguida/clboss/issues])
 AC_CONFIG_AUX_DIR([auxdir])
 AM_INIT_AUTOMAKE([subdir-objects tar-ustar])
 AC_CONFIG_SRCDIR([main.cpp])

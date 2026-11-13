@@ -1,3 +1,23 @@
+> **This is not upstream CLBOSS.**
+>
+> This branch is [ksedgwic/clboss](https://github.com/ksedgwic/clboss)
+> 0.17.3 with changes that are not, or not yet, in a release of it:
+>
+> - It runs on the BLAKE2b chain: it reads that chain's 164-byte block
+>   headers, and a node that advertises `option_blake2b` gets that
+>   chain's swap services (`plebswap.com`, `lightningfork.com`) and
+>   hardcoded peers.  A node that does not advertise it is treated as
+>   upstream treats it.
+> - `clboss-swap-providers`, `clboss-swap-selection` and
+>   `clboss-swap-max-fee-ppm`, described under Operating below.
+> - On regtest, a Boltz backend at `http://127.0.0.1:9001` is used
+>   when there is one.
+>
+> It reports itself as `0.17.3-blake2b.1`.  It is unofficial and not
+> audited, and it moves funds on its own: use it at your own risk.
+> Report problems with it at
+> <https://github.com/chrisguida/clboss/issues>, not to upstream.
+
 > ⚠️ **Note about repository ownership**
 >
 > This repository was originally created and maintained by [ZmnSCPxj](https://github.com/ZmnSCPxj).
