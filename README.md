@@ -13,7 +13,7 @@
 > - On regtest, a Boltz backend at `http://127.0.0.1:9001` is used
 >   when there is one.
 >
-> It reports itself as `0.17.3-blake2b.1`.  It is unofficial and not
+> It reports itself as `0.17.3-blake2b.2`.  It is unofficial and not
 > audited, and it moves funds on its own: use it at your own risk.
 > Report problems with it at
 > <https://github.com/chrisguida/clboss/issues>, not to upstream.
