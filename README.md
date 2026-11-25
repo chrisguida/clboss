@@ -5,7 +5,8 @@
 >
 > - It runs on the BLAKE2b chain: it reads that chain's 164-byte block
 >   headers, and a node that advertises `option_blake2b` gets that
->   chain's swap services (`plebswap.com`, `lightningfork.com`) and
+>   chain's swap services (`plebswap.com`, `lightningfork.com`,
+>   `swap.kilombino.com`) and
 >   hardcoded peers.  A node that does not advertise it is treated as
 >   upstream treats it.
 > - `clboss-swap-providers`, `clboss-swap-selection` and
