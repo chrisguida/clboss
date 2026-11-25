@@ -34,7 +34,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - CLBOSS runs on the BLAKE2b chain.  It reads
   that chain's 164-byte block headers, and a node that advertises
   `option_blake2b` (feature bit 512) is given that chain's hardcoded
-  peers and swap services (`plebswap.com`, `lightningfork.com`) and a
+  peers and swap services (`plebswap.com`, `lightningfork.com`,
+  `swap.kilombino.com`) and a
   lower default for `clboss-min-nodes-to-process`.  `lightningd`
   reports the network as `bitcoin` on that chain and on the SHA256d
   chain alike; a node that does not advertise the bit is treated as

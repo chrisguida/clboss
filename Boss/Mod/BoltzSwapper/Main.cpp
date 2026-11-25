@@ -28,8 +28,8 @@ namespace {
            * lightningd also reports the network as
            * "bitcoin"; a node is offered them, and not the ones
            * above, when it advertises option_blake2b.
-           * Both run paulscode/lightning-fork-swap, which serves the
-           * Boltz API v2 at the site root.
+           * All run paulscode/lightning-fork-swap or a fork of it,
+           * which serves the Boltz API v2 at the site root.
            */
           { "plebswap.com",
             "https://plebswap.com",
@@ -39,6 +39,11 @@ namespace {
           { "lightningfork.com",
             "https://lightningfork.com",
             "",
+            /* blake2b = */ true
+          },
+          { "swap.kilombino.com",
+            "https://swap.kilombino.com",
+            "http://swapkqsnxocu2rnmwtaswpvchgl3teooeqgx43ookk5qqhzyx4rzqhid.onion",
             /* blake2b = */ true
           }
       }
